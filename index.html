@@ -6,6 +6,240 @@
     <title>Welcome to My Website</title>
 </head>
 <body>
-    Welcome to my website where I share my thoughts.
+    Welcome to my website where I share my thoughts. Here is a little Game for you
 </htlm>
 </body>
+ <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    canvas {
+      background-color: #222;
+      display: block;
+      margin: auto;
+    }
+
+    #score, #highscore {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      color: white;
+      font-size: 20px;
+    }
+
+    #highscore {
+      top: 40px;
+    }
+
+    #gameOverScreen {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      display: none;
+      text-align: center;
+    }
+
+    #gameOverScreen button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="score">Score: 0</div>
+  <div id="highscore">Highscore: 0</div>
+  <div id="gameOverScreen">
+    <h2>Game Over</h2>
+    <div id="finalScore"></div>
+    <button onclick="restartGame()">Play Again</button>
+  </div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreDisplay = document.getElementById('score');
+    const highscoreDisplay = document.getElementById('highscore');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const finalScoreDisplay = document.getElementById('finalScore');
+
+    const gridSize = 20;
+    let snake, dx, dy, food, score, gameLoop;
+    let isPaused = false;
+
+    let highscore = localStorage.getItem('highscore') || 0;
+    highscoreDisplay.textContent = `Highscore: ${highscore}`;
+
+    function resizeCanvas() {
+      canvas.width = Math.floor(window.innerWidth * 0.8);
+      canvas.height = Math.floor(window.innerHeight * 0.8);
+      canvas.style.marginTop = `${Math.floor(window.innerHeight * 0.1)}px`;
+      canvas.style.marginLeft = `${Math.floor(window.innerWidth * 0.1)}px`;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawSnake() {
+      snake.forEach((segment, index) => {
+        ctx.beginPath();
+        ctx.arc(segment.x + gridSize / 2, segment.y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = index === 0 ? 'white' : 'lime';
+        ctx.fill();
+      });
+    }
+
+    function drawFood() {
+      ctx.beginPath();
+      ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+    }
+
+    function spawnFood() {
+      let x, y;
+      do {
+        x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+        y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+      } while (snake.some(s => s.x === x && s.y === y));
+      food = { x, y };
+    }
+
+    let nextDirection = { dx: gridSize, dy: 0 };
+
+    function moveSnake() {
+      dx = nextDirection.dx;
+      dy = nextDirection.dy;
+
+      const newHead = { x: snake[0].x + dx, y: snake[0].y + dy };
+      snake.unshift(newHead);
+
+      if (newHead.x === food.x && newHead.y === food.y) {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        spawnFood();
+      } else {
+        snake.pop();
+      }
+    }
+
+    function checkCollision() {
+      const head = snake[0];
+
+      if (
+        head.x < 0 || head.y < 0 ||
+        head.x >= canvas.width || head.y >= canvas.height ||
+        snake.slice(1).some(seg => seg.x === head.x && seg.y === head.y)
+      ) {
+        clearInterval(gameLoop);
+        updateHighscore();
+        showGameOverScreen();
+      }
+    }
+
+    function updateHighscore() {
+      if (score > highscore) {
+        highscore = score;
+        localStorage.setItem('highscore', highscore);
+        highscoreDisplay.textContent = `Highscore: ${highscore}`;
+      }
+    }
+
+    function showGameOverScreen() {
+      finalScoreDisplay.textContent = `Final Score: ${score}`;
+      gameOverScreen.style.display = 'block';
+    }
+
+    function gameTick() {
+      if (isPaused) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      moveSnake();
+      checkCollision();
+      drawFood();
+      drawSnake();
+    }
+
+    function restartGame() {
+      const startX = Math.floor(canvas.width / 2 / gridSize) * gridSize;
+      const startY = Math.floor(canvas.height / 2 / gridSize) * gridSize;
+
+      snake = [{ x: startX, y: startY }];
+      dx = gridSize;
+      dy = 0;
+      score = 0;
+      scoreDisplay.textContent = `Score: ${score}`;
+      spawnFood();
+      gameOverScreen.style.display = 'none';
+      clearInterval(gameLoop);
+      gameLoop = setInterval(gameTick, 100);
+    }
+
+    // Key events for desktop
+    document.addEventListener('keydown', e => {
+      if (e.key === 'p') {
+        isPaused = !isPaused;
+        return;
+      }
+
+      if (e.key === 'ArrowUp' && dy === 0) {
+        nextDirection = { dx: 0, dy: -gridSize };
+      } else if (e.key === 'ArrowDown' && dy === 0) {
+        nextDirection = { dx: 0, dy: gridSize };
+      } else if (e.key === 'ArrowLeft' && dx === 0) {
+        nextDirection = { dx: -gridSize, dy: 0 };
+      } else if (e.key === 'ArrowRight' && dx === 0) {
+        nextDirection = { dx: gridSize, dy: 0 };
+      }
+    });
+
+    // Swipe events for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    canvas.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    });
+
+    canvas.addEventListener('touchend', e => {
+      const touch = e.changedTouches[0];
+      const touchEndX = touch.clientX;
+      const touchEndY = touch.clientY;
+
+      const dxSwipe = touchEndX - touchStartX;
+      const dySwipe = touchEndY - touchStartY;
+
+      if (Math.abs(dxSwipe) > Math.abs(dySwipe)) {
+        // Horizontal swipe
+        if (dxSwipe > 0 && dx === 0) {
+          nextDirection = { dx: gridSize, dy: 0 }; // Swipe right
+        } else if (dxSwipe < 0 && dx === 0) {
+          nextDirection = { dx: -gridSize, dy: 0 }; // Swipe left
+        }
+      } else {
+        // Vertical swipe
+        if (dySwipe > 0 && dy === 0) {
+          nextDirection = { dx: 0, dy: gridSize }; // Swipe down
+        } else if (dySwipe < 0 && dy === 0) {
+          nextDirection = { dx: 0, dy: -gridSize }; // Swipe up
+        }
+      }
+    });
+
+    restartGame();
+  </script>
+</body>
+</html>

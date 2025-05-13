@@ -28,22 +28,18 @@
             z-index: 1000;
         }
 
+        #score, #highscore {
+            position: relative;
+            color: white;
+            font-size: 20px;
+            margin-top: 60px; /* Abstand unterhalb des Headers */
+        }
+
         canvas {
             background-color: #222;
             display: block;
             margin: auto;
             position: relative; /* Ermöglicht flexibles Layout */
-        }
-
-        #score, #highscore {
-            position: relative;
-            color: white;
-            font-size: 20px;
-            margin-top: 10px; /* Platz über dem Text */
-        }
-
-        #highscore {
-            margin-top: 0; /* Kein zusätzlicher Abstand zwischen Score und Highscore */
         }
 
         #gameOverScreen {
@@ -203,6 +199,23 @@
             clearInterval(gameLoop);
             gameLoop = setInterval(gameTick, 100);
         }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'p') {
+                isPaused = !isPaused;
+                return;
+            }
+
+            if (e.key === 'ArrowUp' && dy === 0) {
+                nextDirection = { dx: 0, dy: -gridSize };
+            } else if (e.key === 'ArrowDown' && dy === 0) {
+                nextDirection = { dx: 0, dy: gridSize };
+            } else if (e.key === 'ArrowLeft' && dx === 0) {
+                nextDirection = { dx: -gridSize, dy: 0 };
+            } else if (e.key === 'ArrowRight' && dx === 0) {
+                nextDirection = { dx: gridSize, dy: 0 };
+            }
+        });
 
         restartGame();
     </script>

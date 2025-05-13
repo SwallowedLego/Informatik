@@ -14,8 +14,8 @@
       margin: 0;
       background-color: #111;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column; /* Anordnung von oben nach unten */
+      align-items: center; /* Zentriere horizontal */
       height: 100vh;
       font-family: sans-serif;
       overflow: hidden;
@@ -25,18 +25,18 @@
       background-color: #222;
       display: block;
       margin: auto;
+      position: relative; /* Ermöglicht flexibles Layout */
     }
 
     #score, #highscore {
-      position: absolute;
-      top: 15px;
-      left: 20px;
+      position: relative;
       color: white;
       font-size: 20px;
+      margin-top: 10px; /* Platz über dem Text */
     }
 
     #highscore {
-      top: 40px;
+      margin-top: 0; /* Kein zusätzlicher Abstand zwischen Score und Highscore */
     }
 
     #gameOverScreen {
@@ -55,12 +55,23 @@
       font-size: 16px;
       cursor: pointer;
     }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Zentriere Canvas und Text */
+      justify-content: center;
+      flex-grow: 1; /* Füllt den verfügbaren Raum aus */
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
   <div id="score">Score: 0</div>
   <div id="highscore">Highscore: 0</div>
+  <div class="game-container">
+    <canvas id="gameCanvas"></canvas>
+  </div>
   <div id="gameOverScreen">
     <h2>Game Over</h2>
     <div id="finalScore"></div>
@@ -84,8 +95,6 @@
     function resizeCanvas() {
       canvas.width = Math.floor(window.innerWidth * 0.8);
       canvas.height = Math.floor(window.innerHeight * 0.8);
-      canvas.style.marginTop = `${Math.floor(window.innerHeight * 0.1)}px`;
-      canvas.style.marginLeft = `${Math.floor(window.innerWidth * 0.1)}px`;
     }
 
     window.addEventListener('resize', resizeCanvas);

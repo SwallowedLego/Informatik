@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <title>USA</title>
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
+        html, body { height: 100%; margin: 0; }
         body {
             height: 100vh;
             overflow: hidden;
@@ -32,10 +29,26 @@
             z-index: 1;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
+        .back-btn {
+            position: absolute;
+            top: 24px; left: 24px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background: rgba(0,0,0,0.8);}
     </style>
 </head>
 <body>
     <div class="map-bg" id="mapBg"></div>
+    <button class="back-btn" id="backBtn">&larr; Zurück</button>
     <div class="container">
         <h1>USA</h1>
         <p>
@@ -43,13 +56,21 @@
         </p>
     </div>
     <script>
+        const mapBg = document.getElementById('mapBg');
+        // Werte für die USA ggf. anpassen
+        const zoomIn = 'scale(2.2) translate(-15vw, -10vh)';
+        const zoomOut = 'scale(1) translate(0,0)';
         window.onload = function() {
-            // Werte anpassen je nach Position/Größe der USA auf map.png!
-            // translateX negativ schiebt nach links, Y negativ nach oben, scale > 1 zoomt rein
             setTimeout(function() {
-                document.getElementById('mapBg').style.transform = 'scale(2.2) translate(-15vw, -10vh)';
-            }, 300); // leichter Delay für sanften Effekt
-        }
+                mapBg.style.transform = zoomIn;
+            }, 200);
+        };
+        document.getElementById('backBtn').onclick = function() {
+            mapBg.style.transform = zoomOut;
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 700); // passt zur Transition-Dauer
+        };
     </script>
 </body>
 </html>

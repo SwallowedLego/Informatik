@@ -67,12 +67,19 @@
                 mapBg.style.transform = zoomIn;
             }, 200);
         };
+
         document.getElementById('backBtn').onclick = function() {
             mapBg.classList.add("zoomout");
             mapBg.style.transform = zoomOut;
-            setTimeout(function() {
-                window.location.href = 'index.html';
-            }, 500);
+
+            // Nur beim Rückweg: Nach Animation weiterleiten
+            function handleTransitionEnd(e) {
+                if (e.propertyName === "transform") {
+                    mapBg.removeEventListener("transitionend", handleTransitionEnd);
+                    window.location.href = 'index.html';
+                }
+            }
+            mapBg.addEventListener("transitionend", handleTransitionEnd);
         };
     </script>
 </body>

@@ -60,13 +60,13 @@
     </div>
     <script>
         const mapBg = document.getElementById('mapBg');
-        const zoomIn = 'scale(2.5) translate(1vw, 15vh)';
+        const zoomIn = 'scale(2.5) translate(1vw, 20vh)';
         const zoomOut = 'scale(1) translate(0,0)';
         window.onload = function() {
             setTimeout(function() {
                 mapBg.style.transform = zoomIn;
             }, 200);
-    
+        };
         document.getElementById('backBtn').onclick = function() {
             mapBg.classList.add("zoomout");
             mapBg.style.transform = zoomOut;

@@ -19,6 +19,9 @@
             transition: transform 2.5s cubic-bezier(.77,0,.18,1);
             will-change: transform;
         }
+        .zoomout {
+            transition: transform 0.5s cubic-bezier(.77,0,.18,1) !important;
+        }
         .container {
             background: rgba(0,0,0,0.5);
             max-width: 600px;
@@ -57,7 +60,6 @@
     </div>
     <script>
         const mapBg = document.getElementById('mapBg');
-        // Werte für Norwegen ggf. anpassen
         const zoomIn = 'scale(2.5) translate(7vw, -16vh)';
         const zoomOut = 'scale(1) translate(0,0)';
         window.onload = function() {
@@ -66,10 +68,11 @@
             }, 200);
         };
         document.getElementById('backBtn').onclick = function() {
+            mapBg.classList.add("zoomout");
             mapBg.style.transform = zoomOut;
             setTimeout(function() {
                 window.location.href = 'index.html';
-            }, 700);
+            }, 500);
         };
     </script>
 </body>

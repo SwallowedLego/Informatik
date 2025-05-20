@@ -3,11 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>USA</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        .map-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('map.png') center center/cover no-repeat;
+            z-index: -1;
+            transition: transform 2.5s cubic-bezier(.77,0,.18,1);
+            will-change: transform;
+        }
+        .container {
+            background: rgba(0,0,0,0.5);
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px 40px;
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+    </style>
 </head>
 <body>
-    <h1>USA</h1>
-    <p>
-        Die Vereinigten Staaten von Amerika (USA) sind ein großes Land in Nordamerika. Die Hauptstadt ist Washington, D.C. Die USA sind bekannt für ihre kulturelle Vielfalt, ihre Wirtschaftsstärke und weltberühmte Sehenswürdigkeiten wie die Freiheitsstatue und den Grand Canyon.
-    </p>
+    <div class="map-bg" id="mapBg"></div>
+    <div class="container">
+        <h1>USA</h1>
+        <p>
+            Die Vereinigten Staaten von Amerika (USA) sind ein großes Land in Nordamerika. Die Hauptstadt ist Washington, D.C. Die USA sind bekannt für ihre kulturelle Vielfalt, ihre Wirtschaftsstärke und weltberühmte Sehenswürdigkeiten wie die Freiheitsstatue und den Grand Canyon.
+        </p>
+    </div>
+    <script>
+        window.onload = function() {
+            // Werte anpassen je nach Position/Größe der USA auf map.png!
+            // translateX negativ schiebt nach links, Y negativ nach oben, scale > 1 zoomt rein
+            setTimeout(function() {
+                document.getElementById('mapBg').style.transform = 'scale(2.2) translate(-15vw, -10vh)';
+            }, 300); // leichter Delay für sanften Effekt
+        }
+    </script>
 </body>
 </html>

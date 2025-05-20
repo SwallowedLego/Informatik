@@ -3,11 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>Norwegen</title>
+    <style>
+        html, body { height: 100%; margin: 0; }
+        body {
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        .map-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('map.png') center center/cover no-repeat;
+            z-index: -1;
+            transition: transform 2.5s cubic-bezier(.77,0,.18,1);
+            will-change: transform;
+        }
+        .container {
+            background: rgba(0,0,0,0.5);
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px 40px;
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .back-btn {
+            position: absolute;
+            top: 24px; left: 24px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background: rgba(0,0,0,0.8);}
+    </style>
 </head>
 <body>
-    <h1>Norwegen</h1>
-    <p>
-        Norwegen liegt in Nordeuropa und ist bekannt für seine beeindruckenden Fjorde, Berge und die Nordlichter. Die Hauptstadt ist Oslo. Norwegen hat eine hohe Lebensqualität und ist berühmt für seine Natur und seine Outdoor-Aktivitäten.
-    </p>
+    <div class="map-bg" id="mapBg"></div>
+    <button class="back-btn" id="backBtn">&larr; Zurück</button>
+    <div class="container">
+        <h1>Norwegen</h1>
+        <p>
+            Norwegen liegt in Nordeuropa und ist bekannt für seine beeindruckenden Fjorde, Berge und die Nordlichter. Die Hauptstadt ist Oslo. Norwegen hat eine hohe Lebensqualität und ist berühmt für seine Natur und seine Outdoor-Aktivitäten.
+        </p>
+    </div>
+    <script>
+        const mapBg = document.getElementById('mapBg');
+        // Werte für Norwegen ggf. anpassen
+        const zoomIn = 'scale(2.5) translate(7vw, -16vh)';
+        const zoomOut = 'scale(1) translate(0,0)';
+        window.onload = function() {
+            setTimeout(function() {
+                mapBg.style.transform = zoomIn;
+            }, 200);
+        };
+        document.getElementById('backBtn').onclick = function() {
+            mapBg.style.transform = zoomOut;
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 700);
+        };
+    </script>
 </body>
 </html>
